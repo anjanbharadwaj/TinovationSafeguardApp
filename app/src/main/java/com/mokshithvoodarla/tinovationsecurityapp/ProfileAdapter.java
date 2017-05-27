@@ -1,14 +1,27 @@
 package com.mokshithvoodarla.tinovationsecurityapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
+
+import static com.mokshithvoodarla.tinovationsecurityapp.R.id.imageView;
 
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder> {
 
@@ -17,6 +30,14 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
     public ProfileAdapter(List<ProfileInfo> contactList) {
         this.contactList = contactList;
     }
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    // Create a storage reference from our app
+    //private StorageReference storageRef = storage.getReference();
+    private StorageReference storageRef = storage.getReferenceFromUrl("gs://safeguard-82cc4.appspot.com/pictures/");
+
+
+
+    private StorageReference riversRef;
 
     @Override
     public int getItemCount() {
@@ -24,11 +45,33 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
     }
 
     @Override
-    public void onBindViewHolder(ProfileViewHolder contactViewHolder, int i) {
+    public void onBindViewHolder(final ProfileViewHolder contactViewHolder, int i) {
         ProfileInfo ci = contactList.get(i);
         contactViewHolder.vName.setText(ci.name);
         contactViewHolder.description.setText(ci.description);
+
+        StorageReference islandRef = storageRef.child("trump.jpg/");
+        final long ONE_MEGABYTE = 1024 * 1024;
+
+        islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // Data for "images/island.jpg" is returns, use this as needed
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                contactViewHolder.imageView.setImageBitmap(bitmap);
+                Log.v("sree", "It Works ");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.v("sree", "Error ==> " + exception.toString());
+
+
+            }
+        });
+
         contactViewHolder.imageView.setImageResource(R.drawable.aki);
+
         contactViewHolder.vAction1.setText(ci.action1);
         contactViewHolder.vAction1.setClickable(false);
         contactViewHolder.vAction2.setText(ci.action2);

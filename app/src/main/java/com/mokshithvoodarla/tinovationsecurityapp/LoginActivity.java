@@ -43,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
                         nametomatch = name.getText().toString();
                         passwordtomatch = pass.getText().toString();
 
+                        nametomatch = "anjanbbbb@gmail.com";
+                        passwordtomatch = "hellohello";
+
                         ArrayList<String> allusers = new ArrayList<String>();
                         Iterator i = dataSnapshot.getChildren().iterator();
                         while(i.hasNext()){

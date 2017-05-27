@@ -26,15 +26,20 @@ import static com.mokshithvoodarla.tinovationsecurityapp.R.id.imageView;
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder> {
 
     private List<ProfileInfo> contactList;
+    private String username;
+    private String picturename;
 
-    public ProfileAdapter(List<ProfileInfo> contactList) {
+    public ProfileAdapter(List<ProfileInfo> contactList, String username, String picturename) {
         this.contactList = contactList;
+        this.username = username;
+        this.picturename = picturename;
+
+        Log.v("sree", "In profile adapter and username is " + username);
     }
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     // Create a storage reference from our app
     //private StorageReference storageRef = storage.getReference();
-    private StorageReference storageRef = storage.getReferenceFromUrl("gs://safeguard-82cc4.appspot.com/pictures/");
-
+    private StorageReference storageRef = storage.getReferenceFromUrl("gs://safeguard-82cc4.appspot.com/");
 
 
     private StorageReference riversRef;
@@ -49,11 +54,15 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         ProfileInfo ci = contactList.get(i);
         contactViewHolder.vName.setText(ci.name);
         contactViewHolder.description.setText(ci.description);
+        picturename.replace('/','|');
+        picturename.replace(' ', '-');
+//gs://safeguard-82cc4.appspot.com/anjanbbbb/trump.jpg
+        StorageReference ref = storageRef.child(username + "/trump.jpg/");
 
-        StorageReference islandRef = storageRef.child("trump.jpg/");
+
         final long ONE_MEGABYTE = 1024 * 1024;
 
-        islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 // Data for "images/island.jpg" is returns, use this as needed
@@ -70,7 +79,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
             }
         });
 
-        contactViewHolder.imageView.setImageResource(R.drawable.aki);
+//        contactViewHolder.imageView.setImageResource(R.drawable.aki);
 
         contactViewHolder.vAction1.setText(ci.action1);
         contactViewHolder.vAction1.setClickable(false);

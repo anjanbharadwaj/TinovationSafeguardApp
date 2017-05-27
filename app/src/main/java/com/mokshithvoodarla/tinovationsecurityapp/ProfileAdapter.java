@@ -57,7 +57,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         picturename.replace('/','|');
         picturename.replace(' ', '-');
 //gs://safeguard-82cc4.appspot.com/anjanbbbb/trump.jpg
-        StorageReference ref = storageRef.child(username + "/trump.jpg/");
+        StorageReference ref = storageRef.child(username + "/" + "trump" + ".jpg/");
 
 
         final long ONE_MEGABYTE = 1024 * 1024;

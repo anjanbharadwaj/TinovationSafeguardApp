@@ -7,6 +7,7 @@ package com.mokshithvoodarla.tinovationsecurityapp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,7 +33,7 @@ public class OneFragment extends Fragment{
     DatabaseReference root;
     ArrayList<String> info;
     ProfileInfo ci;
-
+    ArrayList<String> data = new ArrayList<>();
     public OneFragment() {
         // Required empty public constructor
     }
@@ -53,10 +54,21 @@ public class OneFragment extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         username = getActivity().getIntent().getExtras().get("Username").toString();
         root = FirebaseDatabase.getInstance().getReference().child(username).child("Stream");
-
         final RecyclerView recList = (RecyclerView) getView().findViewById(R.id.cardList);
+        final SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipe_container);
+        refreshLayout.setEnabled(true);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                refreshLayout.setRefreshing(false);
+            }
+        });
+        refreshLayout.setEnabled(true);
         recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -65,7 +77,7 @@ public class OneFragment extends Fragment{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 System.out.println("An event was added!");
-                ArrayList<String> data = new ArrayList<String>();
+                data = new ArrayList<String>();
                 Iterator i = dataSnapshot.getChildren().iterator();
                 while(i.hasNext()){
                     data.add(((DataSnapshot)i.next()).getKey());
@@ -73,6 +85,7 @@ public class OneFragment extends Fragment{
 
                 ProfileAdapter adapter = new ProfileAdapter(createList(data));
                 recList.setAdapter(adapter);
+
             }
 
             @Override
@@ -80,7 +93,6 @@ public class OneFragment extends Fragment{
 
             }
         });
-
     }
     private List<ProfileInfo> createList(final ArrayList<String> times) {
         result = new ArrayList<>();

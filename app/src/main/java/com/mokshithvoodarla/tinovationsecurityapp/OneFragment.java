@@ -28,6 +28,7 @@ public class OneFragment extends Fragment{
     String username;
     String time;
     String info1 = "";
+    String personName = "";
     DatabaseReference root;
     ArrayList<String> info;
     ProfileInfo ci;
@@ -97,9 +98,14 @@ public class OneFragment extends Fragment{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 info1 = dataSnapshot.child("event").getValue().toString();
+                personName = dataSnapshot.child("person").getValue().toString();
                 ci = new ProfileInfo();
-                ci.name="New visitor for " + username;
-                ci.description="Time:" + time + "," + info1;
+                ci.name=personName;
+                ci.description=username;
+                String timeUpdated = time.substring(time.indexOf("m")+1);
+                timeUpdated = timeUpdated.substring(0,2)+":"+timeUpdated.substring(2);
+                ci.action1 = timeUpdated + (timeUpdated.startsWith("a") ? " AM" : " PM");
+                ci.action2 = info1;
                 result.add(ci);
             }
 

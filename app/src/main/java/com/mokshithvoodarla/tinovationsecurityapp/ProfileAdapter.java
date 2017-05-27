@@ -30,7 +30,9 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         contactViewHolder.description.setText(ci.description);
         contactViewHolder.imageView.setImageResource(R.drawable.aki);
         contactViewHolder.vAction1.setText(ci.action1);
+        contactViewHolder.vAction1.setClickable(false);
         contactViewHolder.vAction2.setText(ci.action2);
+        contactViewHolder.vAction2.setClickable(false);
     }
 
     @Override

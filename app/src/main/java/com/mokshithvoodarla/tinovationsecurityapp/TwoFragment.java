@@ -22,14 +22,21 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class TwoFragment extends Fragment implements OnChartGestureListener{
     PieChart mChart;
     LineChart nLineChart;
-
+    String username;
+    ArrayList<String> people;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +51,53 @@ public class TwoFragment extends Fragment implements OnChartGestureListener{
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        people = new ArrayList<>();
+        username = getActivity().getIntent().getExtras().get("Username").toString();
+
+        final DatabaseReference root = FirebaseDatabase.getInstance().getReference().child(username).child("Stream");
+        root.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterator i = dataSnapshot.getChildren().iterator();
+
+                while(i.hasNext()){
+                    String k = ((DataSnapshot)i.next()).getKey().toString();
+                    root.child(k).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Iterator i = dataSnapshot.getChildren().iterator();
+                            i.next();
+                            String k1 = ((DataSnapshot)i.next()).getValue().toString();
+                            people.add(k1);
+                            System.out.println(k1 + "LOL");
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                makechart();
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        super.onActivityCreated(savedInstanceState);
+    }
+    public void makechart() {
+        int total = people.size();
+        //find how many of the entries are the same, that shows the frequency of each name
+        //people.
+
+        nLineChart = (LineChart) getView().findViewById(R.id.lineChart1);
+        /*
         mChart = (PieChart) getView().findViewById(R.id.pieChart1);
         mChart.setOnChartGestureListener(this);
         mChart.setTouchEnabled(true);
@@ -61,30 +115,29 @@ public class TwoFragment extends Fragment implements OnChartGestureListener{
         mChart.setTransparentCircleColor(Color.WHITE);
         mChart.setTransparentCircleAlpha(110);
 
-        mChart.setHoleRadius(58f);
-        mChart.setTransparentCircleRadius(61f);
+        mChart.setHoleRadius(1f);
+        mChart.setTransparentCircleRadius(1f);
 
         mChart.setDrawCenterText(true);
 
         mChart.setRotationAngle(0);
-        mChart.setRotationEnabled(true);
+        mChart.setRotationEnabled(false);
         mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
         mChart.setHighlightPerTapEnabled(true);
         List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(18.5f, "9 PM"));
-        entries.add(new PieEntry(26.7f, "6 PM"));
-        entries.add(new PieEntry(24.0f, "12 PM"));
-        entries.add(new PieEntry(30.8f, "10 AM"));
+
 
         PieDataSet set = new PieDataSet(entries, "People");
+        PieEntry p = new Pie
+        entries.add()
         int[] c = {Color.RED, Color.BLUE, Color.parseColor("#FFC107"), Color.parseColor("#009688")};
         set.setColors(c);
         set.setValueTextColor(Color.WHITE);
         PieData data = new PieData(set);
         mChart.setData(data);
         mChart.invalidate();
+        */
 
-        super.onActivityCreated(savedInstanceState);
     }
     @Override
     public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {

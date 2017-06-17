@@ -43,8 +43,8 @@ public class LoginActivity extends AppCompatActivity {
                         nametomatch = name.getText().toString();
                         passwordtomatch = pass.getText().toString();
 
-                        nametomatch = "anjanbbbb@gmail.com";
-                        passwordtomatch = "hellohello";
+                        //nametomatch = "anjanbbbb@gmail.com";
+                        //passwordtomatch = "hellohello";
 
                         ArrayList<String> allusers = new ArrayList<String>();
                         Iterator i = dataSnapshot.getChildren().iterator();
@@ -56,23 +56,23 @@ public class LoginActivity extends AppCompatActivity {
 
 
                             Iterator i1 = dataSnapshot.child(nametomatch).getChildren().iterator();
+                            while(i1.hasNext()) {
+                                DataSnapshot s = ((DataSnapshot) i1.next());
 
-                            DataSnapshot s = ((DataSnapshot)i1.next());
+                                String key = s.getKey().toString();
+                                System.out.println(key);
+                                if (key.equals("password")) {
+                                    if (passwordtomatch.equals(s.getValue().toString())) {
+                                        System.out.println(passwordtomatch);
+                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        intent.putExtra("Username", nametomatch);
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "One of the required fields is incorrect. Please try again.", Toast.LENGTH_SHORT).show();
+                                    }
 
-                            String key = s.getKey().toString();
-                            System.out.println(key);
-                            if(key.equals("Password")){
-                                if(passwordtomatch.equals(s.getValue().toString())){
-                                    System.out.println(passwordtomatch);
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    intent.putExtra("Username", nametomatch);
-                                    startActivity(intent);
-                                }else{
-                                    Toast.makeText(getApplicationContext(), "One of the required fields is incorrect. Please try again.", Toast.LENGTH_SHORT).show();
                                 }
-
                             }
-
 
                         }else{
                             Toast.makeText(getApplicationContext(), "One of the required fields is incorrect. Please try again.", Toast.LENGTH_SHORT).show();

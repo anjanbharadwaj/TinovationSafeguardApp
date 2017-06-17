@@ -41,12 +41,20 @@ public class SignupActivity extends AppCompatActivity {
                 Map<String, Object> lowermap = new HashMap<String, Object>();
 
                 highermap.put(user, "");
-                lowermap.put("Password", userpass);
+                lowermap.put("password", userpass);
                 lowermap.put("Stream", "");
 
                 root.updateChildren(highermap);
                 root.child(user).updateChildren(lowermap);
 
+                Map<String, Object> streammap = new HashMap<String, Object>();
+                Map<String, Object> streammap2 = new HashMap<String, Object>();
+
+                streammap.put("pm1640", "");
+                streammap2.put("event", "Account Created");
+                root.child(user).child("Stream").updateChildren(streammap);
+                root.child(user).child("Stream").child("pm1640").updateChildren(streammap2);
+                
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 i.putExtra("Username", user);
                 startActivity(i);

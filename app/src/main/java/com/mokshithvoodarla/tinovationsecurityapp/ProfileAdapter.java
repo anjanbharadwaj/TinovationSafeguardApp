@@ -28,21 +28,15 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
     private List<ProfileInfo> contactList;
     private String username;
     private String picturename;
-
-    public ProfileAdapter(List<ProfileInfo> contactList, String username, String picturename) {
+    public ProfileAdapter(List<ProfileInfo> contactList) {
         this.contactList = contactList;
-        this.username = username;
-        this.picturename = picturename;
 
-        Log.v("sree", "In profile adapter and username is " + username);
+
     }
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
     // Create a storage reference from our app
     //private StorageReference storageRef = storage.getReference();
-    private StorageReference storageRef = storage.getReferenceFromUrl("gs://safeguard-82cc4.appspot.com/");
 
 
-    private StorageReference riversRef;
 
     @Override
     public int getItemCount() {
@@ -54,30 +48,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         ProfileInfo ci = contactList.get(i);
         contactViewHolder.vName.setText(ci.name);
         contactViewHolder.description.setText(ci.description);
-        picturename.replace('/','|');
-        picturename.replace(' ', '-');
-//gs://safeguard-82cc4.appspot.com/anjanbbbb/trump.jpg
-        StorageReference ref = storageRef.child(username + "/" + "trump" + ".jpg/");
+        contactViewHolder.imageView.setImageBitmap(ci.bitmap);
 
-
-        final long ONE_MEGABYTE = 1024 * 1024;
-
-        ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                // Data for "images/island.jpg" is returns, use this as needed
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                contactViewHolder.imageView.setImageBitmap(bitmap);
-                Log.v("sree", "It Works ");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.v("sree", "Error ==> " + exception.toString());
-
-
-            }
-        });
 
 //        contactViewHolder.imageView.setImageResource(R.drawable.aki);
 
